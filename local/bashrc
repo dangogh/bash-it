@@ -1,0 +1,41 @@
+[ -f /etc/bashrc ] && . /etc/bashrc
+
+export PDSH_SSH_ARGS_APPEND='-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+# interactive stuff
+if [[ $- =~ i ]]
+then
+        export LESS="-R"
+
+	# bash completion
+	shopt -s extglob
+        if [ -f /usr/local/share/bash-completion/bash_completion ]; then
+            . /usr/local/share/bash-completion/bash_completion
+        fi
+
+	export EDITOR=vim
+
+	# User specific aliases and functions
+	export GOPATH=$HOME/Code/internal
+	export GOBIN=$HOME/bin/$(uname -s)
+	PATH=$GOBIN:$HOME/bin:$PATH
+
+	PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+	MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+        for p in  /Users/dkirkw202/Library/Python/2.7/bin /usr/local/opt/curl/bin; do
+            [[ -d $p ]] && PATH="$p:$PATH"
+        done
+
+	ssht() {
+		$(type -p ssh) -t "$@" tmux -CC attach || tmux -CC new
+	}
+	gp() {
+		local spec="$1"
+		[[ -z $spec ]] && { echo "Usage gp <PR spec> (e.g. dangogh:TC-123)"; return; }
+		local rem=git@github.com:${spec%:*}/trafficcontrol 
+		git pull $rem ${spec#*:}
+	}
+	complete -F _ssh ssht
+        [[ -f $HOME/.ssh/tokens ]] && . $HOME/.ssh/tokens
+fi
+
