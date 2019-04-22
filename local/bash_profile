@@ -6,9 +6,6 @@ fi
 
 [[ -f $HOME/.bashrc ]] && . $HOME/.bashrc
 
-# Path to the bash it configuration
-export BASH_IT="$HOME/Code/internal/src/github.com/dangogh/bash-it"
-
 # Lock and Load a custom theme file
 # location /.bash_it/themes/
 export BASH_IT_THEME='bobby'
